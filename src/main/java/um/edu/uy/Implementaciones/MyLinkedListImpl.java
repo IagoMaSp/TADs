@@ -28,11 +28,11 @@ public class MyLinkedListImpl<T> implements MyList<T> {
     public void add(T data, int index) throws ListOutOfIndex {
         if (index == 0) {
             addFirst(data);
-        } else if (index == size - 1) {
+        } else if (index == size) {
             addLast(data);
         } else {
+            SimpleNode<T> tempNode = new SimpleNode<>(data);
             SimpleNode<T> prevNode = search(index - 1);
-            SimpleNode<T> tempNode = search(index);
             tempNode.setNextNode(prevNode.getNextNode());
             prevNode.setNextNode(tempNode);
             size++;
@@ -48,6 +48,10 @@ public class MyLinkedListImpl<T> implements MyList<T> {
     }
 
     public void addLast(T data){
+        if (isEmpty()){
+            add(data);
+            return;
+        }
         this.tail.setNextNode(new SimpleNode<>(data));
         this.tail = this.tail.getNextNode();
         size++;
@@ -61,9 +65,9 @@ public class MyLinkedListImpl<T> implements MyList<T> {
         if (index >= size){
             throw new ListOutOfIndex("Index is invalid");
         } else if (index == size-1){
-            deleteLast();
+            return deleteLast();
         } else if (index == 0){
-            deleteFirst();
+            return deleteFirst();
         }
 
         SimpleNode<T> previousNode = search(index-1);
@@ -78,14 +82,23 @@ public class MyLinkedListImpl<T> implements MyList<T> {
             throw new EmptyListException("Empty List, cannot remove an object");
         }
         T result = this.tail.getData();
+        if (size == 1){
+            this.head = null;
+            this.tail = null;
+            size--;
+            return result;
+        }
+
+
 
         SimpleNode<T> currentNode = this.head;
-        while (!currentNode.getNextNode().equals(this.tail)){
+        while (!currentNode.equals(this.tail)){
             currentNode = currentNode.getNextNode();
         }
 
         this.tail = currentNode;
         this.tail.setNextNode(null);
+        size--;
         return result;
     }
 
@@ -95,6 +108,7 @@ public class MyLinkedListImpl<T> implements MyList<T> {
         }
         T result = this.head.getData();
         this.head = this.head.getNextNode();
+        size--;
         return result;
     }
 
@@ -104,6 +118,9 @@ public class MyLinkedListImpl<T> implements MyList<T> {
             throw new EmptyListException("Empty list, cannot remove an object");
         }
         int indexNodeToRemove = searchIndex(data);
+        if (indexNodeToRemove < 0){
+            throw new ValueNoExist("Object is not in the list");
+        }
         SimpleNode<T> previousNode = search(indexNodeToRemove-1);
         previousNode.setNextNode(previousNode.getNextNode().getNextNode());
         size--;
@@ -173,7 +190,7 @@ public class MyLinkedListImpl<T> implements MyList<T> {
             }
             current = current.getNextNode();
         }
-        return current;
+        throw new ValueNoExist("The object is not in the list");
     }
 
     private int searchIndex(T data){
