@@ -55,17 +55,58 @@ public class MyLinkedListImpl<T> implements MyList<T> {
 
     @Override
     public T delete(int index) throws ListOutOfIndex, EmptyListException {
-        return null;
+        if (isEmpty()){
+            throw new EmptyListException("Empty list, cannot remove an object");
+        }
+        if (index >= size){
+            throw new ListOutOfIndex("Index is invalid");
+        } else if (index == size-1){
+            deleteLast();
+        } else if (index == 0){
+            deleteFirst();
+        }
+
+        SimpleNode<T> previousNode = search(index-1);
+        T result = previousNode.getNextNode().getData();
+        previousNode.setNextNode(previousNode.getNextNode().getNextNode());
+        return result;
     }
 
     @Override
     public T deleteLast() throws EmptyListException {
-        return null;
+        if (isEmpty()){
+            throw new EmptyListException("Empty List, cannot remove an object");
+        }
+        T result = this.tail.getData();
+
+        SimpleNode<T> currentNode = this.head;
+        while (!currentNode.getNextNode().equals(this.tail)){
+            currentNode = currentNode.getNextNode();
+        }
+
+        this.tail = currentNode;
+        this.tail.setNextNode(null);
+        return result;
+    }
+
+    public T deleteFirst() throws EmptyListException {
+        if (isEmpty()){
+            throw new EmptyListException("Empty list, cannot remove an object");
+        }
+        T result = this.head.getData();
+        this.head = this.head.getNextNode();
+        return result;
     }
 
     @Override
     public void deleteValue(T data) throws EmptyListException, ListOutOfIndex, ValueNoExist {
-
+        if (isEmpty()){
+            throw new EmptyListException("Empty list, cannot remove an object");
+        }
+        int indexNodeToRemove = searchIndex(data);
+        SimpleNode<T> previousNode = search(indexNodeToRemove-1);
+        previousNode.setNextNode(previousNode.getNextNode().getNextNode());
+        size--;
     }
 
     @Override
@@ -75,6 +116,13 @@ public class MyLinkedListImpl<T> implements MyList<T> {
 
     @Override
     public boolean contains(T data) {
+        SimpleNode<T> currentNode = this.head;
+        while (currentNode != null){
+            if (currentNode.getData().equals(data)){
+                return true;
+            }
+            currentNode = currentNode.getNextNode();
+        }
         return false;
     }
 
@@ -128,4 +176,16 @@ public class MyLinkedListImpl<T> implements MyList<T> {
         return current;
     }
 
+    private int searchIndex(T data){
+        SimpleNode<T> currentNode = this.head;
+        int indexToSend = 0;
+        while (currentNode != null){
+            if (currentNode.getData().equals(data)){
+                return indexToSend;
+            }
+            currentNode = currentNode.getNextNode();
+            indexToSend++;
+        }
+        return -1;
+    }
 }

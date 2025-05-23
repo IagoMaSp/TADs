@@ -60,7 +60,11 @@ public class MyArrayListImpl<T> implements MyList<T> {
             throw new EmptyListException("La lista no contiene elementos.");
         }
         if (index >= this.indexLastValue){
-            throw new ListOutOfIndex("Maximo lugar " + this.indexLastValue);
+            throw new ListOutOfIndex("Last place " + this.indexLastValue);
+        } else if (index == this.indexLastValue-1){
+            deleteLast();
+        } else if (index == 0){
+            deleteFirst();
         }
         T eliminatedObject = this.mainArray[index];
         moveToLeft(index);
@@ -70,12 +74,22 @@ public class MyArrayListImpl<T> implements MyList<T> {
 
     public T deleteLast() throws EmptyListException {
         if (isEmpty()){
-            throw new EmptyListException("La lista no contiene elementos.");
+            throw new EmptyListException("Empty list, cannot remove an object");
         }
         this.indexLastValue--;
         T toReturn = this.mainArray[indexLastValue];
         this.mainArray[indexLastValue] = null;
         return toReturn;
+    }
+
+    public T deleteFirst() throws EmptyListException {
+        if (isEmpty()){
+            throw new EmptyListException("Empty list, cannot remove an object");
+        }
+        T result = get(0);
+        moveToLeft(0);
+        return result;
+
     }
 
     public void deleteValue(T data) throws EmptyListException, ListOutOfIndex, ValueNoExist{

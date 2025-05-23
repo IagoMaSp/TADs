@@ -12,6 +12,7 @@ public interface MyList<T> {
 
     T delete(int index) throws ListOutOfIndex, EmptyListException;
     T deleteLast() throws EmptyListException;
+    T deleteFirst() throws EmptyListException;
     void deleteValue(T data) throws EmptyListException, ListOutOfIndex, ValueNoExist;
 
     int size();
