@@ -10,7 +10,7 @@ public class MyArrayListImpl<T> implements MyList<T> {
     private int indexLastValue;
 
     public boolean isEmpty(){
-        return this.indexLastValue == 0 && this.mainArray[0] == null;
+        return this.indexLastValue == 0;
     }
 
     public MyArrayListImpl(int size) {
@@ -41,7 +41,7 @@ public class MyArrayListImpl<T> implements MyList<T> {
                 this.mainArray[this.indexLastValue] = data;
                 this.indexLastValue++;
             }else{
-                moveToRigth(index);
+                moveToRight(index);
                 this.mainArray[index] = data;
                 this.indexLastValue++;
             }
@@ -49,7 +49,7 @@ public class MyArrayListImpl<T> implements MyList<T> {
     }
 
     public void addFirst(T data){
-        moveToRigth(0);
+        moveToRight(0);
         this.indexLastValue++;
         this.mainArray[0]=data;
     }
@@ -60,7 +60,11 @@ public class MyArrayListImpl<T> implements MyList<T> {
             throw new EmptyListException("La lista no contiene elementos.");
         }
         if (index >= this.indexLastValue){
-            throw new ListOutOfIndex("Maximo lugar " + this.indexLastValue);
+            throw new ListOutOfIndex("Last place " + this.indexLastValue);
+        } else if (index == this.indexLastValue-1){
+            return deleteLast();
+        } else if (index == 0){
+            return deleteFirst();
         }
         T eliminatedObject = this.mainArray[index];
         moveToLeft(index);
@@ -70,27 +74,39 @@ public class MyArrayListImpl<T> implements MyList<T> {
 
     public T deleteLast() throws EmptyListException {
         if (isEmpty()){
-            throw new EmptyListException("La lista no contiene elementos.");
+            throw new EmptyListException("Empty list, cannot remove an object");
         }
-        this.indexLastValue--;
-        T toReturn = this.mainArray[indexLastValue];
+        T toReturn = this.mainArray[indexLastValue - 1];
         this.mainArray[indexLastValue] = null;
+        this.indexLastValue--;
         return toReturn;
     }
 
+    public T deleteFirst() throws EmptyListException {
+        if (isEmpty()){
+            throw new EmptyListException("Empty list, cannot remove an object");
+        }
+        T result = get(0);
+        moveToLeft(0);
+        this.indexLastValue--;
+        return result;
+
+    }
+
     public void deleteValue(T data) throws EmptyListException, ListOutOfIndex, ValueNoExist{
-        for (int indice=0; indice<this.indexLastValue; indice++){
+        for (int indice = 0; indice < this.indexLastValue ; indice++){
             if(data.equals(this.mainArray[indice])){
                 try{
                     delete(indice);
+                    return;
                 } catch (ListOutOfIndex e) {
                     throw new ListOutOfIndex("e");
                 } catch (EmptyListException e){
                     throw new EmptyListException("e");
                 }
             }
-            throw new ValueNoExist("El valor no existe.");
         }
+        throw new ValueNoExist("El valor no existe.");
     }
 
     @Override
@@ -143,16 +159,18 @@ public class MyArrayListImpl<T> implements MyList<T> {
         this.mainArray = newArray;
     }
 
-    private void moveToRigth(int positionIndex){
-        for (int indice=indexLastValue; indice > positionIndex; indice--){
-            this.mainArray[indice] = this.mainArray[indice-1];
-        }
-        this.mainArray[positionIndex]=null;
+    private void moveToLeft(int initialPosition) {
+        if (indexLastValue - 1 - initialPosition >= 0)
+            System.arraycopy(mainArray, initialPosition + 1, mainArray, initialPosition, indexLastValue - 1 - initialPosition);
+        mainArray[indexLastValue - 1] = null;
     }
 
-    private void moveToLeft(int initialPosition) {
-        for(int indice=initialPosition; indice<this.indexLastValue; indice++){
-            this.mainArray[indice]=this.mainArray[indice+1];
+    private void moveToRight(int positionIndex) {
+        if (this.indexLastValue == this.mainArray.length){
+            incrementLenght();
         }
+        if (indexLastValue - positionIndex >= 0)
+            System.arraycopy(mainArray, positionIndex, mainArray, positionIndex + 1, indexLastValue - positionIndex);
     }
+
 }
