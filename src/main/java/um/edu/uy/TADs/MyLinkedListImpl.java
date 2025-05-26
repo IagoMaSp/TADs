@@ -1,4 +1,4 @@
-package um.edu.uy.Implementaciones;
+package um.edu.uy.TADs;
 
 import um.edu.uy.Exceptions.EmptyListException;
 import um.edu.uy.Exceptions.ListOutOfIndex;

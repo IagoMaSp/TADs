@@ -1,4 +1,4 @@
-package um.edu.uy.Implementaciones;
+package um.edu.uy.TADs;
 
 import um.edu.uy.Exceptions.EmptyTreeException;
 import um.edu.uy.Exceptions.FullNodoException;
@@ -7,9 +7,6 @@ import um.edu.uy.Exceptions.ParentNotFoundException;
 import um.edu.uy.Interfaces.MyBinaryTree;
 import um.edu.uy.Interfaces.MyList;
 import um.edu.uy.Nodos.SimpleBinaryNode;
-
-
-import java.util.List;
 
 public class MyTreeImpl<K,T> implements MyBinaryTree<K,T> {
     private SimpleBinaryNode<K,T> root;
