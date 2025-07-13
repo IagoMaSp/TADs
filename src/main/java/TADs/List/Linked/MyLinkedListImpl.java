@@ -1,10 +1,11 @@
-package um.edu.uy.Implementaciones;
+package TADs.List.Linked;
 
 import um.edu.uy.Exceptions.EmptyListException;
 import um.edu.uy.Exceptions.ListOutOfIndex;
 import um.edu.uy.Exceptions.ValueNoExist;
-import um.edu.uy.Interfaces.MyList;
-import um.edu.uy.Nodos.SimpleNode;
+import um.edu.uy.TADs.List.MyList;
+
+import java.util.Iterator;
 
 public class MyLinkedListImpl<T> implements MyList<T> {
     private SimpleNode<T> head;
@@ -73,6 +74,7 @@ public class MyLinkedListImpl<T> implements MyList<T> {
         SimpleNode<T> previousNode = search(index-1);
         T result = previousNode.getNextNode().getData();
         previousNode.setNextNode(previousNode.getNextNode().getNextNode());
+        size--;
         return result;
     }
 
@@ -89,10 +91,8 @@ public class MyLinkedListImpl<T> implements MyList<T> {
             return result;
         }
 
-
-
         SimpleNode<T> currentNode = this.head;
-        while (!currentNode.equals(this.tail)){
+        while (!currentNode.getNextNode().equals(this.tail)){
             currentNode = currentNode.getNextNode();
         }
 
@@ -121,9 +121,14 @@ public class MyLinkedListImpl<T> implements MyList<T> {
         if (indexNodeToRemove < 0){
             throw new ValueNoExist("Object is not in the list");
         }
-        SimpleNode<T> previousNode = search(indexNodeToRemove-1);
-        previousNode.setNextNode(previousNode.getNextNode().getNextNode());
-        size--;
+
+        if (indexNodeToRemove == 0) {
+            deleteFirst();
+        } else {
+            SimpleNode<T> previousNode = search(indexNodeToRemove-1);
+            previousNode.setNextNode(previousNode.getNextNode().getNextNode());
+            size--;
+        }
     }
 
     @Override
@@ -160,6 +165,11 @@ public class MyLinkedListImpl<T> implements MyList<T> {
     @Override
     public boolean isEmpty() {
         return this.head==null;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new MyLinkedListIterator<>(head);
     }
 
     private SimpleNode<T> search(int index){

@@ -1,16 +1,22 @@
-package um.edu.uy.Implementaciones;
+package TADs.List;
 
 import um.edu.uy.Exceptions.EmptyListException;
 import um.edu.uy.Exceptions.ListOutOfIndex;
 import um.edu.uy.Exceptions.ValueNoExist;
-import um.edu.uy.Interfaces.MyList;
 
-public class MyArrayListImpl<T> implements MyList<T> {
+import java.util.Iterator;
+
+
+public class MyArrayListImpl<T> implements MyList<T>{
     private T[] mainArray;
     private int indexLastValue;
 
     public boolean isEmpty(){
         return this.indexLastValue == 0;
+    }
+
+    public MyArrayListImpl(){
+        this(10);
     }
 
     public MyArrayListImpl(int size) {
@@ -77,7 +83,7 @@ public class MyArrayListImpl<T> implements MyList<T> {
             throw new EmptyListException("Empty list, cannot remove an object");
         }
         T toReturn = this.mainArray[indexLastValue - 1];
-        this.mainArray[indexLastValue] = null;
+        this.mainArray[indexLastValue - 1] = null;
         this.indexLastValue--;
         return toReturn;
     }
@@ -126,7 +132,7 @@ public class MyArrayListImpl<T> implements MyList<T> {
     }
 
     public T get(int index) throws ListOutOfIndex, EmptyListException{
-        if (index>=this.indexLastValue){
+        if (index>=this.indexLastValue || index<0){
             throw new ListOutOfIndex("Index no valido");
         }
         if (isEmpty()){
@@ -173,4 +179,8 @@ public class MyArrayListImpl<T> implements MyList<T> {
             System.arraycopy(mainArray, positionIndex, mainArray, positionIndex + 1, indexLastValue - positionIndex);
     }
 
+    @Override
+    public Iterator<T> iterator() {
+        return new MyArrayListIterator<>(mainArray, size());
+    }
 }
