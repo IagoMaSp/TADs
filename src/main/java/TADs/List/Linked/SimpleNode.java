@@ -1,4 +1,4 @@
-package um.edu.uy.Nodos;
+package TADs.List.Linked;
 
 public class SimpleNode<T> {
     T data;
